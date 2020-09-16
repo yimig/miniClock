@@ -84,6 +84,7 @@ namespace miniClockT2
         {
             lbClock.BackColor = SystemColors.Control;
             Opacity = 0.5;
+            SetPenetrate();
         }
 
         public void DisableEditMode()
