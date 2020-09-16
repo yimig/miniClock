@@ -16,6 +16,8 @@ namespace miniClockT2
         private WClock wClock;
         private Anchor anchor;
         private int screenWidth, screenHeight;
+        private BreakQueue<Color> colorQueue;
+        private Label[] lbColors;
 
         public WSetting()
         {
@@ -23,6 +25,32 @@ namespace miniClockT2
             SystemEvents.DisplaySettingsChanged += new
                 EventHandler(SystemEvents_DisplaySettingsChanged);
             GetScreenResolution();
+            InitColorQueue();
+            Label[] tempLabels = { lbColor1, lbColor2, lbColor3, lbColor4, lbColor5 };
+            lbColors = tempLabels;
+            foreach (var label in lbColors)
+            {
+                label.Click += lbColors_Click;
+            }
+        }
+
+        private void lbColors_Click(object sender, EventArgs e)
+        {
+            wClock.ChangeClockFontColor(((Label)sender).BackColor);
+        }
+
+        private void InitColorQueue()
+        {
+            colorQueue=new BreakQueue<Color>(5);
+            for(int i=0;i<5;i++)colorQueue.Enqueue(Color.FromArgb(255,255,255,255));
+        }
+
+        private void ReloadColorQueue()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                lbColors[i].BackColor = colorQueue[i];
+            }
         }
 
         private void GetScreenResolution()
@@ -81,6 +109,54 @@ namespace miniClockT2
         private void trbSize_Scroll(object sender, EventArgs e)
         {
             ChangeSIze();
+            wClock.EnableEditMode();
+        }
+
+        private void trbFontSize_Scroll(object sender, EventArgs e)
+        {
+            wClock.ChangeClockFontSize(trbFontSize.Value*2);
+            wClock.EnableEditMode();
+        }
+
+        private void trbSize_MouseUp(object sender, MouseEventArgs e)
+        {
+            wClock.DisableEditMode();
+        }
+
+        private void trbFontSize_MouseUp(object sender, MouseEventArgs e)
+        {
+            wClock.DisableEditMode();
+        }
+
+        private void btnSelectFont_Click(object sender, EventArgs e)
+        {
+            FontDialog fontDialog=new FontDialog();
+            if (fontDialog.ShowDialog() == DialogResult.OK)
+            {
+                wClock.ChangeClockFont(fontDialog.Font);
+            }
+        }
+
+        private void trbOpacity_Scroll(object sender, EventArgs e)
+        {
+            wClock.ChangeOpacity(trbOpacity.Value);
+        }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSelectColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog=new ColorDialog();
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                lbNowColor.BackColor = colorDialog.Color;
+                colorQueue.Enqueue(colorDialog.Color);
+                ReloadColorQueue();
+                wClock.ChangeClockFontColor(colorDialog.Color);
+            }
         }
     }
 }
