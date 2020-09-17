@@ -28,11 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WSetting));
             this.trbHorizontal = new System.Windows.Forms.TrackBar();
             this.trbVertical = new System.Windows.Forms.TrackBar();
             this.trbSize = new System.Windows.Forms.TrackBar();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tbpControl = new System.Windows.Forms.TabPage();
+            this.btnSave = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.trbOpacity = new System.Windows.Forms.TrackBar();
             this.label5 = new System.Windows.Forms.Label();
@@ -50,8 +53,17 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.tbpCommon = new System.Windows.Forms.TabPage();
+            this.chbBoot = new System.Windows.Forms.CheckBox();
             this.tbpAbout = new System.Windows.Forms.TabPage();
-            this.btnSave = new System.Windows.Forms.Button();
+            this.lbProject = new System.Windows.Forms.Label();
+            this.lbBlog = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiHideOrShow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trbHorizontal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbVertical)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbSize)).BeginInit();
@@ -60,6 +72,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.trbOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbFontSize)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.tbpCommon.SuspendLayout();
+            this.tbpAbout.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // trbHorizontal
@@ -95,11 +110,13 @@
             this.trbSize.TabIndex = 2;
             this.trbSize.Value = 10;
             this.trbSize.Scroll += new System.EventHandler(this.trbSize_Scroll);
+            this.trbSize.MouseLeave += new System.EventHandler(this.trbSize_MouseLeave);
             this.trbSize.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trbSize_MouseUp);
             // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tbpControl);
+            this.tabControl.Controls.Add(this.tbpCommon);
             this.tabControl.Controls.Add(this.tbpAbout);
             this.tabControl.Location = new System.Drawing.Point(12, 13);
             this.tabControl.Name = "tabControl";
@@ -130,6 +147,16 @@
             this.tbpControl.TabIndex = 0;
             this.tbpControl.Text = "控制";
             this.tbpControl.UseVisualStyleBackColor = true;
+            // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(15, 461);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(227, 34);
+            this.btnSave.TabIndex = 13;
+            this.btnSave.Text = "保存";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // label6
             // 
@@ -191,6 +218,7 @@
             this.trbFontSize.TabIndex = 7;
             this.trbFontSize.Value = 24;
             this.trbFontSize.Scroll += new System.EventHandler(this.trbFontSize_Scroll);
+            this.trbFontSize.MouseLeave += new System.EventHandler(this.trbFontSize_MouseLeave);
             this.trbFontSize.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trbFontSize_MouseUp);
             // 
             // groupBox1
@@ -300,25 +328,112 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "横向";
             // 
+            // tbpCommon
+            // 
+            this.tbpCommon.Controls.Add(this.chbBoot);
+            this.tbpCommon.Location = new System.Drawing.Point(4, 22);
+            this.tbpCommon.Name = "tbpCommon";
+            this.tbpCommon.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpCommon.Size = new System.Drawing.Size(251, 502);
+            this.tbpCommon.TabIndex = 2;
+            this.tbpCommon.Text = "通用";
+            this.tbpCommon.UseVisualStyleBackColor = true;
+            // 
+            // chbBoot
+            // 
+            this.chbBoot.AutoSize = true;
+            this.chbBoot.Location = new System.Drawing.Point(19, 16);
+            this.chbBoot.Name = "chbBoot";
+            this.chbBoot.Size = new System.Drawing.Size(72, 16);
+            this.chbBoot.TabIndex = 0;
+            this.chbBoot.Text = "开机启动";
+            this.chbBoot.UseVisualStyleBackColor = true;
+            this.chbBoot.CheckedChanged += new System.EventHandler(this.chbBoot_CheckedChanged);
+            // 
             // tbpAbout
             // 
+            this.tbpAbout.Controls.Add(this.lbProject);
+            this.tbpAbout.Controls.Add(this.lbBlog);
+            this.tbpAbout.Controls.Add(this.label8);
+            this.tbpAbout.Controls.Add(this.label7);
             this.tbpAbout.Location = new System.Drawing.Point(4, 22);
             this.tbpAbout.Name = "tbpAbout";
             this.tbpAbout.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpAbout.Size = new System.Drawing.Size(251, 461);
+            this.tbpAbout.Size = new System.Drawing.Size(251, 502);
             this.tbpAbout.TabIndex = 1;
             this.tbpAbout.Text = "关于";
             this.tbpAbout.UseVisualStyleBackColor = true;
             // 
-            // btnSave
+            // lbProject
             // 
-            this.btnSave.Location = new System.Drawing.Point(15, 461);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(227, 34);
-            this.btnSave.TabIndex = 13;
-            this.btnSave.Text = "保存";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.lbProject.AutoSize = true;
+            this.lbProject.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.lbProject.Location = new System.Drawing.Point(21, 91);
+            this.lbProject.Name = "lbProject";
+            this.lbProject.Size = new System.Drawing.Size(209, 12);
+            this.lbProject.TabIndex = 3;
+            this.lbProject.Text = "https://github.com/yimig/miniClock";
+            this.lbProject.Click += new System.EventHandler(this.lbProject_Click);
+            // 
+            // lbBlog
+            // 
+            this.lbBlog.AutoSize = true;
+            this.lbBlog.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.lbBlog.Location = new System.Drawing.Point(21, 67);
+            this.lbBlog.Name = "lbBlog";
+            this.lbBlog.Size = new System.Drawing.Size(137, 12);
+            this.lbBlog.TabIndex = 2;
+            this.lbBlog.Text = "Author: Tim.G/upane.cn";
+            this.lbBlog.Click += new System.EventHandler(this.lbBlog_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(21, 42);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(71, 12);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "Ver 1.3.0.0";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.Location = new System.Drawing.Point(16, 15);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(76, 16);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "版本信息";
+            // 
+            // notifyIcon
+            // 
+            this.notifyIcon.ContextMenuStrip = this.contextMenuStrip;
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "Mini Clock";
+            this.notifyIcon.Visible = true;
+            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiHideOrShow,
+            this.tsmiExit});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(154, 48);
+            // 
+            // tsmiHideOrShow
+            // 
+            this.tsmiHideOrShow.Name = "tsmiHideOrShow";
+            this.tsmiHideOrShow.Size = new System.Drawing.Size(153, 22);
+            this.tsmiHideOrShow.Text = "临时隐藏/显示";
+            this.tsmiHideOrShow.Click += new System.EventHandler(this.tsmiHideOrShow_Click);
+            // 
+            // tsmiExit
+            // 
+            this.tsmiExit.Name = "tsmiExit";
+            this.tsmiExit.Size = new System.Drawing.Size(153, 22);
+            this.tsmiExit.Text = "退出";
+            this.tsmiExit.Click += new System.EventHandler(this.tsmiExit_Click);
             // 
             // WSetting
             // 
@@ -326,8 +441,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(283, 553);
             this.Controls.Add(this.tabControl);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "WSetting";
             this.Text = "Mini Clock";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WSetting_FormClosing);
             this.Load += new System.EventHandler(this.WSetting_Load);
             ((System.ComponentModel.ISupportInitialize)(this.trbHorizontal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbVertical)).EndInit();
@@ -338,6 +456,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.trbOpacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbFontSize)).EndInit();
             this.groupBox1.ResumeLayout(false);
+            this.tbpCommon.ResumeLayout(false);
+            this.tbpCommon.PerformLayout();
+            this.tbpAbout.ResumeLayout(false);
+            this.tbpAbout.PerformLayout();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -368,5 +491,15 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TrackBar trbOpacity;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Label lbProject;
+        private System.Windows.Forms.Label lbBlog;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TabPage tbpCommon;
+        private System.Windows.Forms.CheckBox chbBoot;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem tsmiHideOrShow;
+        private System.Windows.Forms.ToolStripMenuItem tsmiExit;
     }
 }

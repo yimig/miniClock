@@ -24,13 +24,20 @@ namespace miniClockT2
         private Label[] lbColors;
         private Settings settings;
         private const string SETTING_FILE_NAME = "settings.json";
+        private bool isShowClock;
 
         public WSetting()
         {
             InitializeComponent();
+            GetScreenResolution();
+            LoadColorQueue();
+            isShowClock = true;
+        }
+
+        private void LoadColorQueue()
+        {
             SystemEvents.DisplaySettingsChanged += new
                 EventHandler(SystemEvents_DisplaySettingsChanged);
-            GetScreenResolution();
             InitColorQueue();
             Label[] tempLabels = { lbColor1, lbColor2, lbColor3, lbColor4, lbColor5 };
             lbColors = tempLabels;
@@ -49,11 +56,11 @@ namespace miniClockT2
             trbFontSize.Value = settings.Style.FontSize;
             trbOpacity.Value = settings.Style.Opacity;
             wClock.ChangeClockFont(settings.Style.GetFont());
-            lbNowColor.BackColor = settings.Style.NowColor.GetColor();
-            wClock.ChangeClockFontColor(settings.Style.NowColor.GetColor());
+            ChangeNowColor(settings.Style.NowColor.GetColor());
             colorQueue = settings.Style.GetCacheColors();
             ReloadColorQueue();
             ReloadTrackBar();
+            chbBoot.Checked = settings.Common.BootWithWindows;
         }
 
         private void ReloadTrackBar()
@@ -64,6 +71,7 @@ namespace miniClockT2
             trbVertical_Scroll(obj,e);
             trbSize_Scroll(obj,e);
             trbFontSize_Scroll(obj, e);
+            wClock.DisableEditMode();
             trbOpacity_Scroll(obj,e);
         }
 
@@ -84,8 +92,14 @@ namespace miniClockT2
         {
             LocationSettings loSettings = new LocationSettings(50, 50, 10);
             StyleSettings sySettings = new StyleSettings(50, new Font("微软雅黑", 24), Color.FromArgb(255,255,255,255), colorQueue);
-            Settings settings = new Settings(loSettings, sySettings);
+            CommonSettings comSettings = new CommonSettings(false);
+            Settings settings = new Settings(loSettings, sySettings, comSettings);
             return JsonConvert.SerializeObject(settings);
+        }
+
+        private void SaveSettings()
+        {
+            WriteSettings(JsonConvert.SerializeObject(settings));
         }
 
         private void WriteSettings(string jsonStr)
@@ -97,7 +111,14 @@ namespace miniClockT2
 
         private void lbColors_Click(object sender, EventArgs e)
         {
-            wClock.ChangeClockFontColor(((Label)sender).BackColor);
+            ChangeNowColor(((Label)sender).BackColor);
+        }
+
+        private void ChangeNowColor(Color nowColor)
+        {
+            settings.Style.NowColor=new JsonColor(nowColor);
+            wClock.ChangeClockFontColor(nowColor);
+            lbNowColor.BackColor = nowColor;
         }
 
         private void InitColorQueue()
@@ -157,6 +178,7 @@ namespace miniClockT2
             if (wClock != null) return;
             wClock=new WClock();
             wClock.Show();
+            HideForm();
             anchor =new Anchor(wClock.Height,wClock.Width,wClock.Location,true);
             SetDefaultSettings();
             LoadSettings();
@@ -212,7 +234,77 @@ namespace miniClockT2
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            WriteSettings(JsonConvert.SerializeObject(settings));
+            SaveSettings();
+            MessageBox.Show("已保存");
+        }
+
+        private void chbBoot_CheckedChanged(object sender, EventArgs e)
+        {
+            BootWithWindows.Boot(chbBoot.Checked);
+            settings.Common.BootWithWindows = chbBoot.Checked;
+            SaveSettings();
+        }
+
+        private void lbBlog_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://upane.cn/");
+        }
+
+        private void lbProject_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/yimig/miniClock");
+        }
+
+        private void HideForm()
+        {
+            ShowInTaskbar = false;
+            this.Hide();
+        }
+
+        private void ShowForm()
+        {
+            ShowInTaskbar = true;
+            this.Show();
+        }
+
+        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            if(e.Button==MouseButtons.Left)ShowForm();
+        }
+
+        private void WSetting_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            HideForm();
+            e.Cancel = true;
+        }
+
+        private void tsmiHideOrShow_Click(object sender, EventArgs e)
+        {
+            if (!isShowClock)
+            {
+                wClock.Show();
+            }
+            else
+            {
+                wClock.Hide();
+            }
+
+            isShowClock = !isShowClock;
+        }
+
+        private void tsmiExit_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void trbSize_MouseLeave(object sender, EventArgs e)
+        {
+            wClock.DisableEditMode();
+        }
+
+        private void trbFontSize_MouseLeave(object sender, EventArgs e)
+        {
+            wClock.DisableEditMode();
         }
 
         private void btnSelectColor_Click(object sender, EventArgs e)
@@ -220,12 +312,10 @@ namespace miniClockT2
             ColorDialog colorDialog=new ColorDialog();
             if (colorDialog.ShowDialog() == DialogResult.OK)
             {
-                settings.Style.NowColor = new JsonColor(colorDialog.Color);
-                lbNowColor.BackColor = colorDialog.Color;
                 colorQueue.Enqueue(colorDialog.Color);
                 ReloadColorQueue();
                 settings.Style.SetCacheColors(colorQueue);
-                wClock.ChangeClockFontColor(colorDialog.Color);
+                ChangeNowColor(colorDialog.Color);
             }
         }
     }

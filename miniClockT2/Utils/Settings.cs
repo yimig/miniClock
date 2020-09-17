@@ -54,7 +54,7 @@ namespace miniClockT2.Utils
         public void SetCacheColors(BreakQueue<Color> bq)
         {
             CacheColors=new List<JsonColor>();
-            for (int i = bq.Length - 2; i >= 0; i--)
+            for (int i = bq.Length - 1; i >= 0; i--)
             {
                 CacheColors.Add(new JsonColor(bq[i]));
             }
@@ -85,6 +85,23 @@ namespace miniClockT2.Utils
         [JsonProperty("color")] public JsonColor NowColor;
 
         [JsonProperty("cacheColors")] public List<JsonColor> CacheColors;
+
+    }
+
+    class CommonSettings
+    {
+        public CommonSettings()
+        {
+
+        }
+
+        public CommonSettings(bool bootWithWindows)
+        {
+            BootWithWindows = bootWithWindows;
+        }
+
+
+        [JsonProperty("bootWithWindows")] public bool BootWithWindows;
 
     }
 
@@ -125,15 +142,19 @@ namespace miniClockT2.Utils
 
         }
 
-        public Settings(LocationSettings location, StyleSettings style)
+        public Settings(LocationSettings location, StyleSettings style,CommonSettings common)
         {
             Location = location;
             Style = style;
+            Common = common;
         }
 
         [JsonProperty("location")] public LocationSettings Location;
 
         [JsonProperty("style")] public StyleSettings Style;
+
+        [JsonProperty("common")] public CommonSettings Common;
+
 
     }
 }

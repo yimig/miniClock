@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("miniClockT2")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("miniClock")]
+[assembly: AssemblyDescription("小时钟")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP Inc.")]
-[assembly: AssemblyProduct("miniClockT2")]
-[assembly: AssemblyCopyright("Copyright © HP Inc. 2020")]
+[assembly: AssemblyCompany("upane.cn")]
+[assembly: AssemblyProduct("miniClock")]
+[assembly: AssemblyCopyright("Tim.G")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
