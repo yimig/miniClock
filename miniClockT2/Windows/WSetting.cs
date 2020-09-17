@@ -23,15 +23,31 @@ namespace miniClockT2
         private BreakQueue<Color> colorQueue;
         private Label[] lbColors;
         private Settings settings;
-        private const string SETTING_FILE_NAME = "settings.json";
+        private string settingFileName = "settings.json";
         private bool isShowClock;
+        private bool defaultHide;
 
-        public WSetting()
+        public WSetting(bool isShow)
         {
             InitializeComponent();
             GetScreenResolution();
             LoadColorQueue();
             isShowClock = true;
+            GetSettingPath();
+            defaultHide = !isShow;
+        }
+
+        public void GetSettingPath()
+        {
+            try
+            {
+                string path = BootWithWindows.GetAppPath();
+                settingFileName = path + "\\" + settingFileName;
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private void LoadColorQueue()
@@ -77,7 +93,7 @@ namespace miniClockT2
 
         private string ReadSettings()
         {
-            StreamReader sr=new StreamReader(SETTING_FILE_NAME);
+            StreamReader sr=new StreamReader(settingFileName);
             string jsonStr = sr.ReadToEnd();
             sr.Close();
             return jsonStr;
@@ -85,7 +101,7 @@ namespace miniClockT2
 
         private void SetDefaultSettings()
         {
-            if(!File.Exists(SETTING_FILE_NAME))WriteSettings(GetDefaultSettings());
+            if(!File.Exists(settingFileName))WriteSettings(GetDefaultSettings());
         }
 
         private string GetDefaultSettings()
@@ -104,7 +120,7 @@ namespace miniClockT2
 
         private void WriteSettings(string jsonStr)
         {
-            StreamWriter writer =new StreamWriter(SETTING_FILE_NAME);
+            StreamWriter writer =new StreamWriter(settingFileName);
             writer.Write(jsonStr);
             writer.Close();
         }
@@ -178,10 +194,10 @@ namespace miniClockT2
             if (wClock != null) return;
             wClock=new WClock();
             wClock.Show();
-            HideForm();
             anchor =new Anchor(wClock.Height,wClock.Width,wClock.Location,true);
             SetDefaultSettings();
             LoadSettings();
+            if(defaultHide)HideForm();
         }
 
         private void trbHorizontal_Scroll(object sender, EventArgs e)
