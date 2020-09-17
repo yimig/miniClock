@@ -26,6 +26,7 @@ namespace miniClockT2
         private const int GWL_STYLE = (-16);
         private const int GWL_EXSTYLE = (-20);
         private const int LWA_ALPHA = 0;
+        private double opacityVar;
 
         [DllImport("user32", EntryPoint = "SetWindowLong")]
         private static extern uint SetWindowLong(
@@ -90,7 +91,7 @@ namespace miniClockT2
         public void DisableEditMode()
         {
             ChangeClockFontColor(lbClock.ForeColor);
-            Opacity = 1;
+            Opacity = opacityVar;
         }
 
         public void ChangeClockFont(Font font)
@@ -100,7 +101,8 @@ namespace miniClockT2
 
         public void ChangeOpacity(int num)
         {
-            Opacity = ((double) num) / 100;
+            opacityVar = ((double)num) / 100;
+            Opacity = opacityVar;
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -117,10 +119,7 @@ namespace miniClockT2
         private string DigitalProcess(int digit)
         {
             if (digit < 10) return "0" + digit;
-            else
-            {
-                return "" + digit;
-            }
+            return "" + digit;
         }
     }
 }

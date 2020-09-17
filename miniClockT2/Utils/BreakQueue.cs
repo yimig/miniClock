@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace miniClockT2
+namespace miniClockT2.Utils
 {
     class BreakQueue<T> : IEnumerable
     {

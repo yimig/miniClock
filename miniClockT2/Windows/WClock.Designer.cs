@@ -56,6 +56,7 @@
             this.Controls.Add(this.lbClock);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "WClock";
+            this.Opacity = 0.5D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WClock";
             this.TopMost = true;

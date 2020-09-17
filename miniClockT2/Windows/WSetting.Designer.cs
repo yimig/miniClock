@@ -33,6 +33,8 @@
             this.trbSize = new System.Windows.Forms.TrackBar();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tbpControl = new System.Windows.Forms.TabPage();
+            this.label6 = new System.Windows.Forms.Label();
+            this.trbOpacity = new System.Windows.Forms.TrackBar();
             this.label5 = new System.Windows.Forms.Label();
             this.btnSelectFont = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
@@ -49,16 +51,15 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tbpAbout = new System.Windows.Forms.TabPage();
-            this.label6 = new System.Windows.Forms.Label();
-            this.trbOpacity = new System.Windows.Forms.TrackBar();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trbHorizontal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbVertical)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbSize)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tbpControl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trbOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbFontSize)).BeginInit();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trbOpacity)).BeginInit();
             this.SuspendLayout();
             // 
             // trbHorizontal
@@ -103,11 +104,12 @@
             this.tabControl.Location = new System.Drawing.Point(12, 13);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(259, 487);
+            this.tabControl.Size = new System.Drawing.Size(259, 528);
             this.tabControl.TabIndex = 3;
             // 
             // tbpControl
             // 
+            this.tbpControl.Controls.Add(this.btnSave);
             this.tbpControl.Controls.Add(this.label6);
             this.tbpControl.Controls.Add(this.trbOpacity);
             this.tbpControl.Controls.Add(this.label5);
@@ -124,11 +126,31 @@
             this.tbpControl.Location = new System.Drawing.Point(4, 22);
             this.tbpControl.Name = "tbpControl";
             this.tbpControl.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpControl.Size = new System.Drawing.Size(251, 461);
+            this.tbpControl.Size = new System.Drawing.Size(251, 502);
             this.tbpControl.TabIndex = 0;
             this.tbpControl.Text = "控制";
             this.tbpControl.UseVisualStyleBackColor = true;
-            this.tbpControl.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 222);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(41, 12);
+            this.label6.TabIndex = 12;
+            this.label6.Text = "透明度";
+            // 
+            // trbOpacity
+            // 
+            this.trbOpacity.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.trbOpacity.Location = new System.Drawing.Point(51, 222);
+            this.trbOpacity.Maximum = 100;
+            this.trbOpacity.Minimum = 1;
+            this.trbOpacity.Name = "trbOpacity";
+            this.trbOpacity.Size = new System.Drawing.Size(194, 45);
+            this.trbOpacity.TabIndex = 11;
+            this.trbOpacity.Value = 50;
+            this.trbOpacity.Scroll += new System.EventHandler(this.trbOpacity_Scroll);
             // 
             // label5
             // 
@@ -288,32 +310,21 @@
             this.tbpAbout.Text = "关于";
             this.tbpAbout.UseVisualStyleBackColor = true;
             // 
-            // label6
+            // btnSave
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 222);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(41, 12);
-            this.label6.TabIndex = 12;
-            this.label6.Text = "透明度";
-            // 
-            // trbOpacity
-            // 
-            this.trbOpacity.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.trbOpacity.Location = new System.Drawing.Point(51, 222);
-            this.trbOpacity.Maximum = 100;
-            this.trbOpacity.Minimum = 1;
-            this.trbOpacity.Name = "trbOpacity";
-            this.trbOpacity.Size = new System.Drawing.Size(194, 45);
-            this.trbOpacity.TabIndex = 11;
-            this.trbOpacity.Value = 50;
-            this.trbOpacity.Scroll += new System.EventHandler(this.trbOpacity_Scroll);
+            this.btnSave.Location = new System.Drawing.Point(15, 461);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(227, 34);
+            this.btnSave.TabIndex = 13;
+            this.btnSave.Text = "保存";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // WSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(283, 512);
+            this.ClientSize = new System.Drawing.Size(283, 553);
             this.Controls.Add(this.tabControl);
             this.Name = "WSetting";
             this.Text = "Mini Clock";
@@ -324,9 +335,9 @@
             this.tabControl.ResumeLayout(false);
             this.tbpControl.ResumeLayout(false);
             this.tbpControl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trbOpacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbFontSize)).EndInit();
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.trbOpacity)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -356,5 +367,6 @@
         private System.Windows.Forms.Button btnSelectFont;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TrackBar trbOpacity;
+        private System.Windows.Forms.Button btnSave;
     }
 }
