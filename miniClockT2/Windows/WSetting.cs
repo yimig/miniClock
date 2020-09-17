@@ -245,6 +245,7 @@ namespace miniClockT2
 
         private void trbOpacity_Scroll(object sender, EventArgs e)
         {
+            settings.Style.Opacity = trbOpacity.Value;
             wClock.ChangeOpacity(trbOpacity.Value);
         }
 
@@ -290,8 +291,12 @@ namespace miniClockT2
 
         private void WSetting_FormClosing(object sender, FormClosingEventArgs e)
         {
-            HideForm();
-            e.Cancel = true;
+            if(e.CloseReason==CloseReason.WindowsShutDown)Environment.Exit(0);
+            else
+            {
+                HideForm();
+                e.Cancel = true;
+            }
         }
 
         private void tsmiHideOrShow_Click(object sender, EventArgs e)
