@@ -48,9 +48,9 @@ namespace miniClock
 
         private void SetDefaultTime()
         {
-            lbHour.Text = DateTime.Now.Hour.ToString();
-            lbMinute.Text = DateTime.Now.Minute.ToString();
-            lbSecond.Text = DateTime.Now.Second.ToString();
+            lbHour.Text = DigitalProcess(DateTime.Now.Hour);
+            lbMinute.Text = DigitalProcess(DateTime.Now.Minute);
+            lbSecond.Text = DigitalProcess(DateTime.Now.Second);
         }
 
         private void TimeDistributer_HourChanged(TimeDistributer distributer, TimeDistributerArgs e)

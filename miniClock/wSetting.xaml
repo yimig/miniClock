@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Mini Clock" Height="600" Width="300" WindowStyle="ToolWindow" Topmost="True" Background="#FFE5E5E5">
+        Title="Mini Clock" Height="600" Width="300" WindowStyle="ToolWindow" Topmost="True" Background="#FFE5E5E5" Closing="WSetting_OnClosing">
     <Window.Resources>
         <ResourceDictionary Source="Resources/ResDictionary.xaml" />
     </Window.Resources>
@@ -95,7 +95,7 @@
             <TabItem Header="关于">
                 <StackPanel Margin="{StaticResource settingMargin}">
                     <TextBlock FontSize="{StaticResource aboutTitleSize}" FontWeight="Bold">版本信息</TextBlock>
-                    <TextBlock FontSize="{StaticResource tbFontSize}" Margin="{StaticResource settingMargin}">Ver 2.0.0.0</TextBlock>
+                    <TextBlock FontSize="{StaticResource tbFontSize}" Margin="{StaticResource settingMargin}">Ver 2.0.0.0 BETA</TextBlock>
                     <TextBlock Name="lbProject" FontSize="{StaticResource tbFontSize}" Foreground="DodgerBlue"
                                MouseDown="lbProject_Click">
                         https://github.com/yimig/miniClock

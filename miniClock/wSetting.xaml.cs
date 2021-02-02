@@ -88,7 +88,7 @@ namespace miniClock
             }
             catch (Exception)
             {
-                MessageBox.Show("在注册表中找不到启动路径，请手动写入注册表或重新安装", "启动错误");
+                MessageBox.Show("在注册表中找不到启动路径，若为第一次启动请忽略此消息。", "启动错误");
             }
         }
 
@@ -394,5 +394,10 @@ namespace miniClock
         // {
         //     return (n & 0xffff);
         // }
+        private void WSetting_OnClosing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+            HideForm();
+        }
     }
 }
