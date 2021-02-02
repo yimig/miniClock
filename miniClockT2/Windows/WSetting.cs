@@ -46,7 +46,7 @@ namespace miniClockT2
             }
             catch (Exception)
             {
-
+                MessageBox.Show("在注册表中找不到启动路径，请手动写入注册表或重新安装", "启动错误");
             }
         }
 
@@ -77,6 +77,7 @@ namespace miniClockT2
             ReloadColorQueue();
             ReloadTrackBar();
             chbBoot.Checked = settings.Common.BootWithWindows;
+            wClock.ResizeWindow();
         }
 
         private void ReloadTrackBar()

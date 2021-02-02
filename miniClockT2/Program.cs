@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using miniClockT2.Windows;
 
 namespace miniClockT2
 {
@@ -16,7 +17,11 @@ namespace miniClockT2
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            if (args.Length != 0 && args[0] == "-s") Application.Run(new WSetting(false));
+            if (args.Length != 0 && args[0] == "-s")
+            {
+                Application.Run(new WSetting(false));
+                //Application.Run(new TestForm());
+            }
             else
             {
                 Application.Run(new WSetting(true));

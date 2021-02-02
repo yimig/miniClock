@@ -1,0 +1,18 @@
+﻿<Window x:Class="miniClock.wClock"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="wClock" Width="0" Height="0" AllowsTransparency="True" WindowStyle="None" Background="Transparent"
+        Topmost="True" WindowStartupLocation="Manual" ShowInTaskbar="False">
+    <Grid>
+        <StackPanel Orientation="Horizontal" Name="spClock">
+            <TextBlock Name="lbHour">00</TextBlock>
+            <TextBlock Name="lbColon1">:</TextBlock>
+            <TextBlock Name="lbMinute">00</TextBlock>
+            <TextBlock Name="lbColon2">:</TextBlock>
+            <TextBlock Name="lbSecond">00</TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>

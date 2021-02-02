@@ -6,19 +6,56 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using miniClockT2.Utils;
 
 namespace miniClockT2
 {
     public partial class WClock : Form
     {
+        private TimeDistributer timeDistributer;
+        private Label[] lbTimes;
         public WClock()
         {
             InitializeComponent();
+            CheckForIllegalCrossThreadCalls = false;
+            lbTimes = new Label[] { lbSecond, lbMinute, lbHour, lbColon1, lbColon2 };
             SetPenetrate();
-            timer.Start();
+            SetDefaultTime();
+            InitDestributer();
+        }
+
+        private void InitDestributer()
+        {
+            timeDistributer = new TimeDistributer();
+            timeDistributer.SecondChanged += TimeDistributer_SecondChanged;
+            timeDistributer.MinuteChanged += TimeDistributer_MinuteChanged;
+            timeDistributer.HourChanged += TimeDistributer_HourChanged;
+        }
+
+        private void SetDefaultTime()
+        {
+            lbHour.Text = DateTime.Now.Hour.ToString();
+            lbMinute.Text = DateTime.Now.Minute.ToString();
+            lbSecond.Text = DateTime.Now.Second.ToString();
+        }
+
+        private void TimeDistributer_HourChanged(TimeDistributer distributer, TimeDistributerArgs e)
+        {
+            lbHour.Text = e.StrValue;
+        }
+
+        private void TimeDistributer_MinuteChanged(TimeDistributer distributer, TimeDistributerArgs e)
+        {
+            lbMinute.Text = e.StrValue;
+        }
+
+        private void TimeDistributer_SecondChanged(TimeDistributer distributer, TimeDistributerArgs e)
+        {
+            lbSecond.Text = e.StrValue;
         }
 
         private const uint WS_EX_LAYERED = 0x80000;
@@ -61,15 +98,26 @@ namespace miniClockT2
 
         public void ChangeClockFontSize(int size)
         {
-            lbClock.Font=new Font(lbClock.Font.FontFamily,size);
+            foreach (var lb in lbTimes)
+            {
+                lb.Font = new Font(lb.Font.FontFamily, size);
+            }
         }
 
         public void ChangeClockFontColor(Color color)
         {
-            BackColor = GetSimilarColor(color);
-            lbClock.BackColor = BackColor;
-            TransparencyKey = BackColor;
-            lbClock.ForeColor = color;
+            //BackColor = GetSimilarColor(color);
+            //TransparencyKey = BackColor;
+
+            foreach (var lb in lbTimes)
+            {
+                //lb.BackColor = BackColor;
+                lb.ForeColor = color;
+            }
+            for (int i = 0; i < tableLayoutPanel.ColumnCount; i++)
+            {
+                tableLayoutPanel.Controls[i].BackColor = i % 2 == 0 ?  Color.RosyBrown : Color.Aquamarine;
+            }
         }
 
         public Color GetSimilarColor(Color color)
@@ -83,31 +131,77 @@ namespace miniClockT2
 
         public void EnableEditMode()
         {
-            lbClock.BackColor = SystemColors.Control;
+            foreach (var lb in lbTimes)
+            {
+                lb.BackColor = SystemColors.Control;
+            }
             Opacity = 0.5;
             SetPenetrate();
         }
 
         public void DisableEditMode()
         {
-            ChangeClockFontColor(lbClock.ForeColor);
+            foreach (var lb in lbTimes)
+            {
+                ChangeClockFontColor(lb.ForeColor);
+            }
             Opacity = opacityVar;
         }
 
         public void ChangeClockFont(Font font)
         {
-            lbClock.Font=new Font(font.FontFamily,lbClock.Font.Size);
+            foreach (var lb in lbTimes)
+            {
+                lb.Font = new Font(font.FontFamily, lb.Font.Size);
+            }
+        }
+
+        public void ResizeWindow()
+        {
+            ResizeWindow(lbHour.Font);
+        }
+
+        public void ResizeWindow(Font font)
+        {
+            var graphics = CreateGraphics();
+            int numberWidth = (int)Math.Ceiling(graphics.MeasureString("88", font).Width);
+            int colonWidth = (int)Math.Ceiling(graphics.MeasureString(":", font).Width);
+            int height = (int)Math.Ceiling(graphics.MeasureString("88", font).Height);
+            ResizeWindowSize(numberWidth,colonWidth,height);
+            ResizeLabelSize(numberWidth,colonWidth,height);
+        }
+
+        private void ResizeWindowSize(int numberWidth,int colonWidth,int height)
+        {
+            Width = numberWidth * 3 + colonWidth * 2;
+            tableLayoutPanel.Width = Width;
+            Height = height;
+            tableLayoutPanel.Height = Height;
+        }
+
+        private void ResizeLabelSize(int numberWidth, int colonWidth, int height)
+        {
+            for (int i = 0; i < tableLayoutPanel.ColumnCount; i++)
+            {
+                tableLayoutPanel.ColumnStyles[i].Width = i % 2 == 0 ? numberWidth : colonWidth;
+            }
+            foreach (var lb in new Label[]{lbHour,lbMinute,lbSecond})
+            {
+                lb.Height = height;
+                lb.Width = numberWidth;
+            }
+            
+            foreach (var lb in new Label[]{lbColon1,lbColon2})
+            {
+                lb.Height = height;
+                lb.Width = colonWidth;
+            }
         }
 
         public void ChangeOpacity(int num)
         {
             opacityVar = ((double)num) / 100;
             Opacity = opacityVar;
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            lbClock.Text = GetDisplayContent();
         }
 
         private string GetDisplayContent()

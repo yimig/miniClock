@@ -1,0 +1,114 @@
+﻿<Window x:Class="miniClock.wSetting"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Mini Clock" Height="600" Width="300" WindowStyle="ToolWindow" Topmost="True" Background="#FFE5E5E5">
+    <Window.Resources>
+        <ResourceDictionary Source="Resources/ResDictionary.xaml" />
+    </Window.Resources>
+    <Grid Margin="{StaticResource settingMargin}">
+        <TabControl>
+            <TabItem Header="设计" Height="21" VerticalAlignment="Top">
+                <StackPanel>
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Left">
+                            <TextBlock FontSize="{StaticResource tbFontSize}" Margin="{StaticResource tbMargin}">横向偏移：</TextBlock>
+                            <TextBlock FontSize="{StaticResource tbFontSize}" Margin="{StaticResource tbMargin}">纵向偏移：</TextBlock>
+                            <TextBlock FontSize="{StaticResource tbFontSize}" Margin="{StaticResource tbMargin}">字体大小：</TextBlock>
+                            <TextBlock FontSize="{StaticResource tbFontSize}" Margin="{StaticResource tbMargin}">透明度：</TextBlock>
+                            <TextBlock FontSize="{StaticResource tbFontSize}" Margin="{StaticResource tbMargin}">字体：</TextBlock>
+                        </StackPanel>
+                        <StackPanel>
+                            <Slider Name="trbHorizontal" Maximum="100" Value="50" Height="{StaticResource ctrHeight}"
+                                    Margin="{StaticResource ctrMargin}" ValueChanged="trbHorizontal_Scroll" />
+                            <Slider Name="trbVertical" Maximum="100" Value="50" Height="{StaticResource ctrHeight}"
+                                    Margin="{StaticResource ctrMargin}" ValueChanged="trbVertical_Scroll" />
+                            <Slider Name="trbFontSize" Maximum="100" Value="24" Height="{StaticResource ctrHeight}"
+                                    Margin="{StaticResource ctrMargin}" ValueChanged="trbFontSize_Scroll"/>
+                            <Slider Name="trbOpacity" Maximum="100" Value="50" Height="{StaticResource ctrHeight}"
+                                    Margin="{StaticResource ctrMargin}" ValueChanged="trbOpacity_Scroll" />
+                            <Button Name="btnSelectFont" Height="{StaticResource ctrHeight}"
+                                    Margin="{StaticResource ctrMargin}" Click="btnSelectFont_Click">
+                                选择
+                            </Button>
+                        </StackPanel>
+                    </DockPanel>
+                    <GroupBox Header="字体颜色" Margin="0,10">
+                        <Grid Height="80" Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Border BorderThickness="{StaticResource borderThickness}"
+                                    BorderBrush="{StaticResource borderBrush}"
+                                    CornerRadius="{StaticResource borderRadius}" Margin="{StaticResource borderMargin}">
+                                <TextBlock Name="lbNowColor" />
+                            </Border>
+                            <Button Name="btnSelectColor" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" Margin="5"
+                                    Click="btnSelectColor_Click">
+                                选择
+                            </Button>
+                            <Border Grid.Row="1" Grid.Column="0" BorderThickness="{StaticResource borderThickness}"
+                                    BorderBrush="{StaticResource borderBrush}"
+                                    CornerRadius="{StaticResource borderRadius}" Margin="{StaticResource borderMargin}">
+                                <TextBlock Name="lbColor1" />
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="1" BorderThickness="{StaticResource borderThickness}"
+                                    BorderBrush="{StaticResource borderBrush}"
+                                    CornerRadius="{StaticResource borderRadius}" Margin="{StaticResource borderMargin}">
+                                <TextBlock Name="lbColor2" />
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="2" BorderThickness="{StaticResource borderThickness}"
+                                    BorderBrush="{StaticResource borderBrush}"
+                                    CornerRadius="{StaticResource borderRadius}" Margin="{StaticResource borderMargin}">
+                                <TextBlock Name="lbColor3" />
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="3" BorderThickness="{StaticResource borderThickness}"
+                                    BorderBrush="{StaticResource borderBrush}"
+                                    CornerRadius="{StaticResource borderRadius}" Margin="{StaticResource borderMargin}">
+                                <TextBlock Name="lbColor4" />
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="4" BorderThickness="{StaticResource borderThickness}"
+                                    BorderBrush="{StaticResource borderBrush}"
+                                    CornerRadius="{StaticResource borderRadius}" Margin="{StaticResource borderMargin}">
+                                <TextBlock Name="lbColor5" />
+                            </Border>
+                        </Grid>
+                    </GroupBox>
+                    <Button Name="btnSave" Margin="10" Height="30" Click="btnSave_Click">保存</Button>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="通用">
+                <StackPanel Margin="{StaticResource settingMargin}">
+                    <CheckBox Name="chbBoot" FontSize="{StaticResource tbFontSize}" Click="chbBoot_CheckedChanged">开机启动</CheckBox>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="关于">
+                <StackPanel Margin="{StaticResource settingMargin}">
+                    <TextBlock FontSize="{StaticResource aboutTitleSize}" FontWeight="Bold">版本信息</TextBlock>
+                    <TextBlock FontSize="{StaticResource tbFontSize}" Margin="{StaticResource settingMargin}">Ver 2.0.0.0</TextBlock>
+                    <TextBlock Name="lbProject" FontSize="{StaticResource tbFontSize}" Foreground="DodgerBlue"
+                               MouseDown="lbProject_Click">
+                        https://github.com/yimig/miniClock
+                    </TextBlock>
+                    <TextBlock FontSize="{StaticResource aboutTitleSize}" FontWeight="Bold" Margin="0,10,0,0">作者信息</TextBlock>
+                    <TextBlock FontSize="{StaticResource tbFontSize}" Margin="10,10,0,0">Tim.</TextBlock>
+                    <TextBlock Name="lbBlog" FontSize="{StaticResource tbFontSize}" Foreground="DodgerBlue"
+                               MouseDown="lbBlog_Click">
+                        upane.cn
+                    </TextBlock>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>
