@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -27,30 +28,38 @@ namespace miniClock
         private readonly TextBlock[] lbTimes;
         private double opacityVar;
         private TimeDistributer timeDistributer;
-
-        public wClock()
+        private Mode mode;
+        private bool dotShow;
+        private int countDownSeconds;
+        private NotifyIcon notifyIcon;
+        public wClock(NotifyIcon notifyIcon)
         {
+            this.notifyIcon = notifyIcon;
             InitializeComponent();
             lbTimes = new[] {lbSecond, lbMinute, lbHour, lbColon1, lbColon2};
             SetPenetrate();
-            //ResizeWindow();
-            SetDefaultTime();
+            mode = Mode.FullClock;
+            SetDefaultClockTime();
             InitDestributer();
         }
 
         private void InitDestributer()
         {
             timeDistributer = new TimeDistributer();
-            timeDistributer.SecondChanged += TimeDistributer_SecondChanged;
+            timeDistributer.SecondChanged += TimeDistributer_ShowSecondChanged;
             timeDistributer.MinuteChanged += TimeDistributer_MinuteChanged;
             timeDistributer.HourChanged += TimeDistributer_HourChanged;
+            timeDistributer.TimeUp += TimeDistributer_TimeUp;
         }
 
-        private void SetDefaultTime()
+        private void TimeDistributer_TimeUp(TimeDistributer distributer, TimeUpArgs args)
         {
-            lbHour.Text = DigitalProcess(DateTime.Now.Hour);
-            lbMinute.Text = DigitalProcess(DateTime.Now.Minute);
-            lbSecond.Text = DigitalProcess(DateTime.Now.Second);
+            Task.Run(() => {
+                Dispatcher.Invoke(() =>
+                {
+                    notifyIcon.ShowBalloonTip(0,"Time Up","设置时间到！",ToolTipIcon.None);
+                });
+            });
         }
 
         private void TimeDistributer_HourChanged(TimeDistributer distributer, TimeDistributerArgs e)
@@ -63,9 +72,73 @@ namespace miniClock
             Task.Run(() => { Dispatcher.Invoke(() => { lbMinute.Text = e.StrValue; }); });
         }
 
-        private void TimeDistributer_SecondChanged(TimeDistributer distributer, TimeDistributerArgs e)
+        private void TimeDistributer_ShowSecondChanged(TimeDistributer distributer, TimeDistributerArgs e)
         {
             Task.Run(() => { Dispatcher.Invoke(() => { lbSecond.Text = e.StrValue; }); });
+        }
+
+        private void TimeDistributer_DotSecondChanged(TimeDistributer distributer, TimeDistributerArgs e)
+        {
+            Task.Run(() => { Dispatcher.Invoke(() =>
+            {
+                dotShow = !dotShow;
+                lbColon1.Visibility = dotShow ? Visibility.Visible : Visibility.Hidden;
+            }); });
+        }
+
+        public void SetCountDownSeconds(int seconds)
+        {
+            countDownSeconds = seconds;
+            timeDistributer.CountDownSeconds = seconds;
+        }
+
+        public void ChangeClockMode(TimeDistributerMode distributerMode)
+        {
+            timeDistributer.Mode = distributerMode;
+            SetDefaultTime(distributerMode);
+        }
+
+        private void SetDefaultTime(TimeDistributerMode distributerMode)
+        {
+            switch (distributerMode)
+            {
+                case TimeDistributerMode.Clock:
+                {
+                    SetDefaultClockTime();
+                    break;
+                }
+                case TimeDistributerMode.CountTimer:
+                {
+                    SetDefaultCountTime();
+                    break;
+                }
+                case TimeDistributerMode.CountDownTimer:
+                {
+                    SetDefaultCountDownTime();
+                    break;
+                }
+            }
+        }
+
+        private void SetDefaultClockTime()
+        {
+            lbHour.Text = DigitalProcess(DateTime.Now.Hour);
+            lbMinute.Text = DigitalProcess(DateTime.Now.Minute);
+            lbSecond.Text = DigitalProcess(DateTime.Now.Second);
+        }
+
+        private void SetDefaultCountTime()
+        {
+            lbHour.Text = "00";
+            lbMinute.Text = "00";
+            lbSecond.Text = "00";
+        }
+
+        private void SetDefaultCountDownTime()
+        {
+            lbHour.Text = DigitalProcess(TimeTools.GetHour(countDownSeconds));
+            lbMinute.Text = DigitalProcess(TimeTools.GetMinute(countDownSeconds));
+            lbSecond.Text = DigitalProcess(TimeTools.GetSecond(countDownSeconds));
         }
 
 
@@ -111,11 +184,66 @@ namespace miniClock
             return new Size(formattedText.Width, formattedText.Height);
         }
 
+        public void ChangeShowSecondSetting(Mode mode)
+        {
+            this.mode = mode;
+            switch (mode)
+            {
+                case Mode.FullClock:
+                {
+                    timeDistributer.SecondChanged -= TimeDistributer_DotSecondChanged;
+                    timeDistributer.SecondChanged += TimeDistributer_ShowSecondChanged;
+                    break;
+                }
+                case Mode.WithoutSecondClock:
+                {
+                    timeDistributer.SecondChanged -= TimeDistributer_ShowSecondChanged;
+                    timeDistributer.SecondChanged += TimeDistributer_DotSecondChanged;
+                    break;
+                }
+            }
+            ResizeWindow();
+        }
+
         public void ResizeWindow()
         {
-            var size = MeasureString("00:00:00");
+            Size size=new Size();
+            switch (mode)
+            {
+                case Mode.FullClock:
+                {
+                    ShowSecondControler();
+                    size = MeasureString("00:00:00");
+                    break;
+                }
+                case Mode.WithoutSecondClock:
+                {
+                    CollapseSecondControler();
+                    size = MeasureString("00:00");
+                    break;
+                }
+            }
             Width = size.Width;
             Height = size.Height;
+        }
+
+        private void CollapseSecondControler()
+        {
+            if (lbSecond.Visibility == Visibility.Visible)
+            {
+                lbColon2.Visibility = Visibility.Collapsed;
+                lbSecond.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ShowSecondControler()
+        {
+            if (lbSecond.Visibility == Visibility.Collapsed)
+            {
+                if (lbColon1.Visibility == Visibility.Hidden) lbColon1.Visibility = Visibility.Visible;
+                lbColon2.Visibility = Visibility.Visible;
+                lbSecond.Visibility = Visibility.Visible;
+            }
         }
 
         public void ChangeOpacity(int num)
@@ -158,5 +286,10 @@ namespace miniClock
         }
 
         #endregion
+
+        public enum Mode
+        {
+            FullClock,WithoutSecondClock
+        }
     }
 }

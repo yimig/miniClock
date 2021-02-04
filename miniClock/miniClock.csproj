@@ -107,6 +107,7 @@
     <Compile Include="Utils\BreakQueue.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\TimeDistributer.cs" />
+    <Compile Include="Utils\TimeTools.cs" />
     <Compile Include="wClock.xaml.cs">
       <DependentUpon>wClock.xaml</DependentUpon>
     </Compile>

@@ -6,13 +6,12 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using Microsoft.Win32;
 using miniClock.Utils;
 using Newtonsoft.Json;
 using Color = System.Windows.Media.Color;
+using ComboBox = System.Windows.Controls.ComboBox;
 using ContextMenu = System.Windows.Forms.ContextMenu;
 using MenuItem = System.Windows.Forms.MenuItem;
 using MessageBox = System.Windows.MessageBox;
@@ -52,12 +51,26 @@ namespace miniClock
         private void LoadWindow()
         {
             InitializeComponent();
+            InitNotifyIcon();
+            InitComboBox();
             GetScreenResolution();
             LoadColorQueue();
             isShowClock = true;
             GetSettingPath();
             LoadClock();
-            InitNotifyIcon();
+        }
+
+        private void InitComboBox()
+        {
+            foreach (ComboBox cb in new ComboBox[]{cbHour,cbMinute,cbSecond})
+            {
+                for (int i = 0; i < 60; i++)
+                {
+                    cb.Items.Add(new ComboBoxItem { Content = i });
+                }
+
+                cb.SelectedIndex = 0;
+            }
         }
 
 
@@ -69,14 +82,33 @@ namespace miniClock
             notifyIcon.Icon = miniClock.Properties.Resources.icon;
             notifyIcon.Visible = true;
             notifyIcon.MouseClick += notifyIcon_MouseClick;
-            var menu = new ContextMenu(); 
-            var closeItem = new MenuItem("隐藏/显示");
-            closeItem.Click += tsmiHideOrShow_Click;
-            var exitItem = new MenuItem("退出");
-            exitItem.Click += tsmiExit_Click;
+            var menu = new ContextMenu();
+            var closeItem = new MenuItem("隐藏/显示", tsmiHideOrShow_Click);
+            var exitItem = new MenuItem("退出", tsmiExit_Click);
+            var clockModeItem = new MenuItem("时钟",tsmiClockMode);
+            var countModeItem = new MenuItem("跑表",tsmiCountMode);
+            var countDownModeItem = new MenuItem("倒计时",tsmiCountDownMode);
+            var modeItem = new MenuItem("功能",new MenuItem[]{clockModeItem,countModeItem,countDownModeItem});
+            menu.MenuItems.Add(modeItem);
             menu.MenuItems.Add(closeItem);
             menu.MenuItems.Add(exitItem);
             notifyIcon.ContextMenu = menu;
+        }
+
+        private void tsmiClockMode(object sender, EventArgs e)
+        {
+            wClock.ChangeClockMode(TimeDistributerMode.Clock);
+        }
+
+        private void tsmiCountMode(object sender, EventArgs e)
+        {
+            wClock.ChangeClockMode(TimeDistributerMode.CountTimer);
+        }
+
+        private void tsmiCountDownMode(object sender, EventArgs e)
+        {
+            wClock.SetCountDownSeconds(settings.Common.CountDownSecond);
+            wClock.ChangeClockMode(TimeDistributerMode.CountDownTimer);
         }
 
         public void GetSettingPath()
@@ -115,6 +147,11 @@ namespace miniClock
             ReloadColorQueue();
             ReloadTrackBar();
             chbBoot.IsChecked = settings.Common.BootWithWindows;
+            chbShowSecond.IsChecked = settings.Common.ShowSecond;
+            ReloadShowSecond();
+            cbHour.SelectedIndex = TimeTools.GetHour(settings.Common.CountDownSecond);
+            cbMinute.SelectedIndex = TimeTools.GetMinute(settings.Common.CountDownSecond);
+            cbSecond.SelectedIndex = TimeTools.GetSecond(settings.Common.CountDownSecond);
             //wClock.ResizeWindow();
         }
 
@@ -147,7 +184,7 @@ namespace miniClock
             var loSettings = new LocationSettings(50, 50, 10);
             var sySettings =
                 new StyleSettings(50, new Font("微软雅黑", 24), Color.FromArgb(255, 255, 255, 255), colorQueue);
-            var comSettings = new CommonSettings(false);
+            var comSettings = new CommonSettings(false,true,1800);
             var settings = new Settings(loSettings, sySettings, comSettings);
             return JsonConvert.SerializeObject(settings);
         }
@@ -215,15 +252,6 @@ namespace miniClock
             ChangeWindowLocation(anchor);
         }
 
-        // private void ChangeSize()
-        // {
-        //     settings.Location.Size = trbSize.Value;
-        //     anchor.Height = 10 * trbSize.Value;
-        //     anchor.Width = 30 * trbSize.Value;
-        //     ChangeWindowLocation(anchor);
-        //     wClock.Size = new Size(anchor.Width, anchor.Height);
-        // }
-
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
             GetScreenResolution();
@@ -234,13 +262,19 @@ namespace miniClock
         private void LoadClock()
         {
             if (wClock != null) return;
-            wClock = new wClock();
+            wClock = new wClock(notifyIcon);
             wClock.Show();
             anchor = new Anchor((int) wClock.Height, (int) wClock.Width, new Point((int) wClock.Left, (int) wClock.Top),
                 true);
             SetDefaultSettings();
             LoadSettings();
             if (defaultHide) HideForm();
+        }
+
+        private void ReloadShowSecond()
+        {
+            wClock.Mode mode = settings.Common.ShowSecond ? wClock.Mode.FullClock : wClock.Mode.WithoutSecondClock;
+            this.wClock.ChangeShowSecondSetting(mode);
         }
 
         private void trbHorizontal_Scroll(object sender, EventArgs e)
@@ -297,7 +331,7 @@ namespace miniClock
 
         private void lbBlog_Click(object sender, EventArgs e)
         {
-            Process.Start("https://upane.cn/");
+            Process.Start("http://upane.cn/");
         }
 
         private void lbProject_Click(object sender, EventArgs e)
@@ -321,19 +355,6 @@ namespace miniClock
         {
             if (e.Button==MouseButtons.Left) ShowForm();
         }
-
-        // private void WSetting_FormClosing(object sender, CancelEventArgs e)
-        // {
-        //     if (e.Cancel == CloseReason.WindowsShutDown)
-        //     {
-        //         Environment.Exit(0);
-        //     }
-        //     else
-        //     {
-        //         HideForm();
-        //         e.Cancel = true;
-        //     }
-        // }
 
         private void tsmiHideOrShow_Click(object sender, EventArgs e)
         {
@@ -368,36 +389,25 @@ namespace miniClock
             }
         }
 
-        // private void WSetting_OnLoaded(object sender, RoutedEventArgs e)
-        // {
-        //     HwndSource source = (HwndSource)PresentationSource.FromDependencyObject(this);
-        //     source.AddHook(WindowProc);
-        // }
-        //
-        // private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        // {
-        //     switch (msg)
-        //     {
-        //         case 0x11:
-        //         case 0x16:
-        //             Environment.Exit(0);
-        //             break;
-        //         case 0x112:
-        //             if ((LOWORD((int) wParam) & 0xfff0) == 0xf060)
-        //                 Console.WriteLine("Close reason: UserClosing");
-        //             break;
-        //     }
-        //     return IntPtr.Zero;
-        // }
-        //
-        // private static int LOWORD(int n)
-        // {
-        //     return (n & 0xffff);
-        // }
         private void WSetting_OnClosing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             HideForm();
+        }
+
+        private void ChbShowSecond_OnClick(object sender, RoutedEventArgs e)
+        {
+            settings.Common.ShowSecond = (bool) chbShowSecond.IsChecked;
+            ReloadShowSecond();
+        }
+
+        private void Cb_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (settings != null)
+            {
+                settings.Common.CountDownSecond =
+                    TimeTools.GetTimeSecond(cbHour.SelectedIndex, cbMinute.SelectedIndex, cbSecond.SelectedIndex);
+            }
         }
     }
 }

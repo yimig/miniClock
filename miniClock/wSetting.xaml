@@ -8,7 +8,8 @@
     <Window.Resources>
         <ResourceDictionary Source="Resources/ResDictionary.xaml" />
     </Window.Resources>
-    <Grid Margin="{StaticResource settingMargin}">
+    <DockPanel Margin="{StaticResource settingMargin}">
+        <Button DockPanel.Dock="Bottom" Name="btnSave" Margin="10" Height="30" Click="btnSave_Click">保存</Button>
         <TabControl>
             <TabItem Header="设计" Height="21" VerticalAlignment="Top">
                 <StackPanel>
@@ -84,12 +85,22 @@
                             </Border>
                         </Grid>
                     </GroupBox>
-                    <Button Name="btnSave" Margin="10" Height="30" Click="btnSave_Click">保存</Button>
                 </StackPanel>
             </TabItem>
             <TabItem Header="通用">
                 <StackPanel Margin="{StaticResource settingMargin}">
-                    <CheckBox Name="chbBoot" FontSize="{StaticResource tbFontSize}" Click="chbBoot_CheckedChanged">开机启动</CheckBox>
+                    <CheckBox Name="chbBoot" FontSize="{StaticResource tbFontSize}" Margin="{StaticResource settingMargin}" Click="chbBoot_CheckedChanged">开机启动</CheckBox>
+                    <CheckBox Name="chbShowSecond" FontSize="{StaticResource tbFontSize}" Margin="{StaticResource settingMargin}" Click="ChbShowSecond_OnClick" IsChecked="True">显示秒</CheckBox>
+                    <GroupBox Header="倒计时设置" Margin="{StaticResource settingMargin}">
+                        <StackPanel Orientation="Horizontal" Margin="{StaticResource settingMargin}">
+                            <ComboBox Name="cbHour" Width="{StaticResource cbWidth}" SelectionChanged="Cb_OnSelectionChanged"></ComboBox>
+                            <TextBlock FontSize="{StaticResource tbFontSize}">时</TextBlock>
+                            <ComboBox Name="cbMinute" Width="{StaticResource cbWidth}" SelectionChanged="Cb_OnSelectionChanged"></ComboBox>
+                            <TextBlock FontSize="{StaticResource tbFontSize}">分</TextBlock>
+                            <ComboBox Name="cbSecond" Width="{StaticResource cbWidth}" SelectionChanged="Cb_OnSelectionChanged"></ComboBox>
+                            <TextBlock FontSize="{StaticResource tbFontSize}">秒</TextBlock>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
             <TabItem Header="关于">
@@ -109,6 +120,5 @@
                 </StackPanel>
             </TabItem>
         </TabControl>
-
-    </Grid>
+    </DockPanel>
 </Window>

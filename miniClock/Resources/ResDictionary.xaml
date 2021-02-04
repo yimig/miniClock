@@ -11,4 +11,5 @@
     <Thickness x:Key="borderMargin">2</Thickness>
     <Thickness x:Key="settingMargin">10</Thickness>
     <system:Double x:Key="aboutTitleSize">20</system:Double>
+    <system:Double x:Key="cbWidth">45</system:Double>
 </ResourceDictionary>
