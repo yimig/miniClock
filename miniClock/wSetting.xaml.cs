@@ -115,6 +115,8 @@ namespace miniClock
             ReloadColorQueue();
             ReloadTrackBar();
             chbBoot.IsChecked = settings.Common.BootWithWindows;
+            chbShowSecond.IsChecked = settings.Common.ShowSecond;
+            ReloadShowSecond();
             //wClock.ResizeWindow();
         }
 
@@ -147,7 +149,7 @@ namespace miniClock
             var loSettings = new LocationSettings(50, 50, 10);
             var sySettings =
                 new StyleSettings(50, new Font("微软雅黑", 24), Color.FromArgb(255, 255, 255, 255), colorQueue);
-            var comSettings = new CommonSettings(false);
+            var comSettings = new CommonSettings(false,true);
             var settings = new Settings(loSettings, sySettings, comSettings);
             return JsonConvert.SerializeObject(settings);
         }
@@ -243,6 +245,12 @@ namespace miniClock
             if (defaultHide) HideForm();
         }
 
+        private void ReloadShowSecond()
+        {
+            wClock.Mode mode = settings.Common.ShowSecond ? wClock.Mode.FullClock : wClock.Mode.WithoutSecondClock;
+            this.wClock.ChangeShowSecondSetting(mode);
+        }
+
         private void trbHorizontal_Scroll(object sender, EventArgs e)
         {
             if (settings != null) ChangeLocationX();
@@ -297,7 +305,7 @@ namespace miniClock
 
         private void lbBlog_Click(object sender, EventArgs e)
         {
-            Process.Start("https://upane.cn/");
+            Process.Start("http://upane.cn/");
         }
 
         private void lbProject_Click(object sender, EventArgs e)
@@ -321,19 +329,6 @@ namespace miniClock
         {
             if (e.Button==MouseButtons.Left) ShowForm();
         }
-
-        // private void WSetting_FormClosing(object sender, CancelEventArgs e)
-        // {
-        //     if (e.Cancel == CloseReason.WindowsShutDown)
-        //     {
-        //         Environment.Exit(0);
-        //     }
-        //     else
-        //     {
-        //         HideForm();
-        //         e.Cancel = true;
-        //     }
-        // }
 
         private void tsmiHideOrShow_Click(object sender, EventArgs e)
         {
@@ -368,36 +363,16 @@ namespace miniClock
             }
         }
 
-        // private void WSetting_OnLoaded(object sender, RoutedEventArgs e)
-        // {
-        //     HwndSource source = (HwndSource)PresentationSource.FromDependencyObject(this);
-        //     source.AddHook(WindowProc);
-        // }
-        //
-        // private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        // {
-        //     switch (msg)
-        //     {
-        //         case 0x11:
-        //         case 0x16:
-        //             Environment.Exit(0);
-        //             break;
-        //         case 0x112:
-        //             if ((LOWORD((int) wParam) & 0xfff0) == 0xf060)
-        //                 Console.WriteLine("Close reason: UserClosing");
-        //             break;
-        //     }
-        //     return IntPtr.Zero;
-        // }
-        //
-        // private static int LOWORD(int n)
-        // {
-        //     return (n & 0xffff);
-        // }
         private void WSetting_OnClosing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             HideForm();
+        }
+
+        private void ChbShowSecond_OnClick(object sender, RoutedEventArgs e)
+        {
+            settings.Common.ShowSecond = (bool) chbShowSecond.IsChecked;
+            ReloadShowSecond();
         }
     }
 }

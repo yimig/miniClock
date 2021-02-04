@@ -78,14 +78,16 @@ namespace miniClock.Utils
     internal class CommonSettings
     {
         [JsonProperty("bootWithWindows")] public bool BootWithWindows;
+        [JsonProperty("ShowSecond")] public bool ShowSecond;
 
         public CommonSettings()
         {
         }
 
-        public CommonSettings(bool bootWithWindows)
+        public CommonSettings(bool bootWithWindows,bool showSecond)
         {
             BootWithWindows = bootWithWindows;
+            ShowSecond = showSecond;
         }
     }
 

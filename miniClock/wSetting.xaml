@@ -89,7 +89,8 @@
             </TabItem>
             <TabItem Header="通用">
                 <StackPanel Margin="{StaticResource settingMargin}">
-                    <CheckBox Name="chbBoot" FontSize="{StaticResource tbFontSize}" Click="chbBoot_CheckedChanged">开机启动</CheckBox>
+                    <CheckBox Name="chbBoot" FontSize="{StaticResource tbFontSize}" Margin="{StaticResource settingMargin}" Click="chbBoot_CheckedChanged">开机启动</CheckBox>
+                    <CheckBox Name="chbShowSecond" FontSize="{StaticResource tbFontSize}" Margin="{StaticResource settingMargin}" Click="ChbShowSecond_OnClick" IsChecked="True">显示秒</CheckBox>
                 </StackPanel>
             </TabItem>
             <TabItem Header="关于">

@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -27,13 +28,15 @@ namespace miniClock
         private readonly TextBlock[] lbTimes;
         private double opacityVar;
         private TimeDistributer timeDistributer;
+        private Mode mode;
+        private bool dotShow;
 
         public wClock()
         {
             InitializeComponent();
             lbTimes = new[] {lbSecond, lbMinute, lbHour, lbColon1, lbColon2};
             SetPenetrate();
-            //ResizeWindow();
+            mode = Mode.FullClock;
             SetDefaultTime();
             InitDestributer();
         }
@@ -41,7 +44,7 @@ namespace miniClock
         private void InitDestributer()
         {
             timeDistributer = new TimeDistributer();
-            timeDistributer.SecondChanged += TimeDistributer_SecondChanged;
+            timeDistributer.SecondChanged += TimeDistributer_ShowSecondChanged;
             timeDistributer.MinuteChanged += TimeDistributer_MinuteChanged;
             timeDistributer.HourChanged += TimeDistributer_HourChanged;
         }
@@ -63,9 +66,18 @@ namespace miniClock
             Task.Run(() => { Dispatcher.Invoke(() => { lbMinute.Text = e.StrValue; }); });
         }
 
-        private void TimeDistributer_SecondChanged(TimeDistributer distributer, TimeDistributerArgs e)
+        private void TimeDistributer_ShowSecondChanged(TimeDistributer distributer, TimeDistributerArgs e)
         {
             Task.Run(() => { Dispatcher.Invoke(() => { lbSecond.Text = e.StrValue; }); });
+        }
+
+        private void TimeDistributer_DotSecondChanged(TimeDistributer distributer, TimeDistributerArgs e)
+        {
+            Task.Run(() => { Dispatcher.Invoke(() =>
+            {
+                dotShow = !dotShow;
+                lbColon1.Visibility = dotShow ? Visibility.Visible : Visibility.Hidden;
+            }); });
         }
 
 
@@ -111,11 +123,66 @@ namespace miniClock
             return new Size(formattedText.Width, formattedText.Height);
         }
 
+        public void ChangeShowSecondSetting(Mode mode)
+        {
+            this.mode = mode;
+            switch (mode)
+            {
+                case Mode.FullClock:
+                {
+                    timeDistributer.SecondChanged -= TimeDistributer_DotSecondChanged;
+                    timeDistributer.SecondChanged += TimeDistributer_ShowSecondChanged;
+                    break;
+                }
+                case Mode.WithoutSecondClock:
+                {
+                    timeDistributer.SecondChanged -= TimeDistributer_ShowSecondChanged;
+                    timeDistributer.SecondChanged += TimeDistributer_DotSecondChanged;
+                    break;
+                }
+            }
+            ResizeWindow();
+        }
+
         public void ResizeWindow()
         {
-            var size = MeasureString("00:00:00");
+            Size size=new Size();
+            switch (mode)
+            {
+                case Mode.FullClock:
+                {
+                    ShowSecondControler();
+                    size = MeasureString("00:00:00");
+                    break;
+                }
+                case Mode.WithoutSecondClock:
+                {
+                    CollapseSecondControler();
+                    size = MeasureString("00:00");
+                    break;
+                }
+            }
             Width = size.Width;
             Height = size.Height;
+        }
+
+        private void CollapseSecondControler()
+        {
+            if (lbSecond.Visibility == Visibility.Visible)
+            {
+                lbColon2.Visibility = Visibility.Collapsed;
+                lbSecond.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ShowSecondControler()
+        {
+            if (lbSecond.Visibility == Visibility.Collapsed)
+            {
+                if (lbColon1.Visibility == Visibility.Hidden) lbColon1.Visibility = Visibility.Visible;
+                lbColon2.Visibility = Visibility.Visible;
+                lbSecond.Visibility = Visibility.Visible;
+            }
         }
 
         public void ChangeOpacity(int num)
@@ -158,5 +225,10 @@ namespace miniClock
         }
 
         #endregion
+
+        public enum Mode
+        {
+            FullClock,WithoutSecondClock
+        }
     }
 }
